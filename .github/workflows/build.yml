@@ -1,0 +1,74 @@
+name: Build App
+
+on:
+  # push:
+  #   branches:
+  #     - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      # Install Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+
+      # Cache dependencies
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      # Install NodeGUI dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # If ubuntu, install Fuse
+      - name: Install fuse and libfuse2
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get install fuse libfuse2
+
+      # Build
+      - name: Build
+        run: npm run build
+
+      # Rename executable for windows
+      - name: Rename executable
+        if: matrix.os == 'windows-latest'
+        run: |
+          mv ./deploy/win32/build/P2SHDATA-GUI/qode.exe ./deploy/win32/build/P2SHDATA-GUI/P2SHDATA-GUI.exe
+
+      # Upload build folder
+      - name: Upload build folder windows
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-${{ matrix.os }}
+          path: "./deploy/win32/build/P2SHDATA-GUI"
+
+      - name: Upload build folder mac
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-${{ matrix.os }}
+          path: "./deploy/darwin/build/P2SHDATA-GUI.dmg"
+
+      - name: Upload build folder linux
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-${{ matrix.os }}
+          path: "./deploy/linux/build/P2SHDATA-GUI"

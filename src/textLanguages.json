@@ -1,0 +1,12 @@
+{
+    "english": {
+        "windowTitle": "P2SHDATA GUI",
+        "downloadTabTitle": "Download",
+        "sendTabTitle": "Send",
+        "settingsTabTitle": "Settings",
+        "downloadButton": "Download",
+        "input_txid_label": "Enter the TXID to download the file:",
+        "input_txid_placeholder": "Enter TXID...",
+        "enter_txid_warning": "Please enter a TXID"
+    }
+}
