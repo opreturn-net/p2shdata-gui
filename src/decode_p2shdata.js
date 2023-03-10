@@ -1,19 +1,14 @@
-import fs from 'fs';
-import RpcClient from 'garlicoind-rpc';
-const config = { protocol: 'http', user: 'user', pass: 'password', host: '127.0.0.1', port: '42068', };
-import util from 'util';
+import { ElectrumClient } from '@samouraiwallet/electrum-client';
 import garlicore from 'bitcore-lib-grlc';
+import fs from 'fs';
+const client = new ElectrumClient(50002, 'electrum.maxpuig.com', 'ssl');
 
 
 /* Return location and info of file */
 async function decodeP2SHDATA(txid, folder) {
-    let error, getRawTransaction, rpc, rawTx;
-    rpc = new RpcClient(config);
-    getRawTransaction = util.promisify(rpc.getRawTransaction).bind(rpc);
-    await getRawTransaction(txid)
-        .then(success => rawTx = success.result)
-        .catch(err => error = err);
-    if (typeof error == 'object') return { error: error.message }; // If txid is invalid (not found
+    connectToElectrum();
+    let rawTx = await client.blockchainTransaction_get(txid);    
+    client.close();
     let tx = garlicore.Transaction(rawTx).toObject();
     let title = tx.outputs.filter((vout) => { return vout.satoshis == 0 })[0].script;
     let data_array = tx.inputs.map((vin) => { return vin.script });
@@ -95,6 +90,18 @@ function cutScript(chunk) {
         data += chunk.slice(2, length + 2);
     }
     return data;
+}
+
+
+function connectToElectrum() {
+    try {
+        client.initElectrum(
+            { client: 'electrum-client-js', version: ['1.2', '1.4'] },
+            { retryPeriod: 5000, maxRetry: 10, pingPeriod: 5000 }
+        ).catch(e => console.log(e));
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 

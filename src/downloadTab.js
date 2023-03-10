@@ -1,61 +1,44 @@
-import { QWidget, QPushButton, FlexLayout, QLabel, QLineEdit, QTextEdit, QFileDialog, QMessageBox, ButtonRole, FileMode, QSizePolicyPolicy, QScrollArea } from '@nodegui/nodegui';
+import {
+    QWidget, QPushButton, QLabel, QLineEdit, QTextEdit, Direction,
+    QFileDialog, QMessageBox, ButtonRole, FileMode, QBoxLayout,
+    QScrollArea
+} from '@nodegui/nodegui';
 import { decodeP2SHDATA } from './decode_p2shdata.js';
 import textLanguages from './textLanguages.json' assert { type: "json" };
 let text = textLanguages['english'];
 
 async function startDownloadTab(downloadTab) {
-    // Create a QPushButton widget and add it to a QWidget container
+    const downloadTabLayout = new QBoxLayout(Direction.TopToBottom);
+    const scrollArea = new QScrollArea();
+    const scrollAreaWidget = new QWidget();
+    const innerLayout = new QBoxLayout(Direction.TopToBottom);
+    const inputLabel = new QLabel();
+    const inputBox = new QLineEdit();
     const downloadButton = new QPushButton();
+    const outputText = new QTextEdit();
+    
+    inputLabel.setText(text.input_txid_label);
+    inputBox.setPlaceholderText(text.input_txid_placeholder);
     downloadButton.setText(text.downloadButton);
-    const buttonContainer = new QWidget();
-    const buttonLayout = new FlexLayout();
-    buttonContainer.setLayout(buttonLayout);
-    buttonLayout.setFlexNode(buttonContainer.getFlexNode());
-    buttonLayout.addWidget(downloadButton);
+    outputText.setReadOnly(true);
 
-    // Create a QLabel widget and add it to a QWidget container
-    const label = new QLabel();
-    label.setText(text.input_txid_label);
-    const labelContainer = new QWidget();
-    const labelLayout = new FlexLayout();
-    labelContainer.setLayout(labelLayout);
-    labelLayout.setFlexNode(labelContainer.getFlexNode());
-    labelLayout.addWidget(label);
-
-    // Create a QLineEdit widget and add it to a QWidget container
-    const input = new QLineEdit();
-    input.setPlaceholderText(text.input_txid_placeholder);
-    const inputContainer = new QWidget();
-    const inputLayout = new FlexLayout();
-    inputContainer.setLayout(inputLayout);
-    inputLayout.setFlexNode(inputContainer.getFlexNode());
-    inputLayout.addWidget(input);
-
-    // Create a QTextEdit widget and add it to a QWidget container
-    const output = new QTextEdit();
-    output.setReadOnly(true);
-    output.setSizePolicy(QSizePolicyPolicy.Expanding, QSizePolicyPolicy.Expanding);
-    const outputContainer = new QWidget();
-    const outputLayout = new FlexLayout();
-    outputContainer.setLayout(outputLayout);
-    outputLayout.setFlexNode(outputContainer.getFlexNode());
-    outputLayout.addWidget(output);
-
-    // Add the button container to the download tab's layout
-    const downloadLayout = new FlexLayout();
-    downloadLayout.setFlexNode(downloadTab.getFlexNode());
-    downloadLayout.addWidget(labelContainer);
-    downloadLayout.addWidget(inputContainer);
-    downloadLayout.addWidget(buttonContainer);
-    downloadLayout.addWidget(outputContainer);
-    downloadTab.setLayout(downloadLayout);
+    scrollArea.setWidgetResizable(true);
+    scrollArea.setWidget(scrollAreaWidget);
+    scrollAreaWidget.setLayout(innerLayout);
+    innerLayout.addWidget(inputLabel);
+    innerLayout.addWidget(inputBox);
+    innerLayout.addWidget(downloadButton);
+    innerLayout.addWidget(outputText);
+    
+    downloadTabLayout.addWidget(scrollArea);
+    downloadTab.setLayout(downloadTabLayout);
 
     // Connect a function to the button's clicked signal to append the input text to the output
     downloadButton.addEventListener('clicked', async () => {
-        if (input.text()) {
+        if (inputBox.text()) {
             const selectedFolder = selectFolder();
             if (selectedFolder) {
-                let txid = input.text();
+                let txid = inputBox.text();
                 txid = '714e6617bc1ff393b3bb0c4be858831b66a633a537a9363796375852cacbd9bb';
                 await getP2SHDATA(txid, selectedFolder);
             }
@@ -64,11 +47,11 @@ async function startDownloadTab(downloadTab) {
         }
     });
 
-    input.addEventListener('returnPressed', async () => {
-        if (input.text()) {
+    inputBox.addEventListener('returnPressed', async () => {
+        if (inputBox.text()) {
             const selectedFolder = selectFolder();
             if (selectedFolder) {
-                let txid = input.text();
+                let txid = inputBox.text();
                 txid = '714e6617bc1ff393b3bb0c4be858831b66a633a537a9363796375852cacbd9bb';
                 await getP2SHDATA(txid, selectedFolder);
             }
@@ -78,20 +61,21 @@ async function startDownloadTab(downloadTab) {
     });
 
     async function getP2SHDATA(txid, selectedFolder) {
-        output.append('TXID: ' + txid);
+        outputText.append('\nTXID: ' + txid);
         let p2shdata = await decodeP2SHDATA(txid, selectedFolder);
         if (p2shdata.error) {
-            output.append(p2shdata.error);
+            outputText.append(p2shdata.error);
             return;
         } else {
-            output.append('Saved file: ' + p2shdata.file_location);
-            input.clear();
-            output.append('P2SHDATA:\n' + JSON.stringify(p2shdata.title, undefined, 4));
+            outputText.append('Saved file: ' + p2shdata.file_location + '\n');
+            inputBox.clear();
+            outputText.append('P2SHDATA:\n' + JSON.stringify(p2shdata.title, undefined, 4));
         }
     }
 
     function selectFolder() {
         const fileDialog = new QFileDialog();
+        fileDialog.setWindowTitle(text.select_folder_to_save_file)
         fileDialog.setFileMode(FileMode.Directory);
         if (fileDialog.exec() == 0) return;
         const selectedFolder = fileDialog.selectedFiles()[0];
