@@ -1,5 +1,6 @@
 import { QMainWindow, QTabWidget, QIcon, QWidget } from '@nodegui/nodegui';
 import { startDownloadTab } from './downloadTab.js';
+import { startSendTab } from './sendTab.js';
 import textLanguages from './textLanguages.json' assert { type: "json" };
 let text = textLanguages['english'];
 
@@ -16,11 +17,12 @@ const downloadTab = new QWidget();
 const settingsTab = new QWidget();
 
 // Add tabs to tab widget
-// tabWidget.addTab(sendTab, new QIcon(), text.sendTabTitle);
+tabWidget.addTab(sendTab, new QIcon(), text.sendTabTitle);
 tabWidget.addTab(downloadTab, new QIcon(), text.downloadTabTitle);
 // tabWidget.addTab(settingsTab, new QIcon(), text.settingsTabTitle);
 
 startDownloadTab(downloadTab);
+startSendTab(sendTab);
 
 win.show();
 global.win = win;

@@ -6,8 +6,10 @@ const client = new ElectrumClient(50002, 'electrum.maxpuig.com', 'ssl');
 
 /* Return location and info of file */
 async function decodeP2SHDATA(txid, folder) {
-    connectToElectrum();
-    let rawTx = await client.blockchainTransaction_get(txid);    
+    const connect = await connectToElectrum();
+    if (connect.error) return { error: JSON.stringify(connect.error, undefined, 4) };
+    let rawTx = await client.blockchainTransaction_get(txid).catch((err) => { return { error: JSON.stringify(err, undefined, 4) } });
+    if (rawTx.error) return { error: rawTx.error };
     client.close();
     let tx = garlicore.Transaction(rawTx).toObject();
     let title = tx.outputs.filter((vout) => { return vout.satoshis == 0 })[0].script;
@@ -93,15 +95,14 @@ function cutScript(chunk) {
 }
 
 
-function connectToElectrum() {
-    try {
-        client.initElectrum(
-            { client: 'electrum-client-js', version: ['1.2', '1.4'] },
-            { retryPeriod: 5000, maxRetry: 10, pingPeriod: 5000 }
-        ).catch(e => console.log(e));
-    } catch (error) {
-        console.log(error);
-    }
+async function connectToElectrum() {
+    let error;
+    await client.initElectrum(
+        { client: 'electrum-client-js', version: ['1.2', '1.4'] },
+        { retryPeriod: 5000, maxRetry: 10, pingPeriod: 5000 }
+    ).catch(e => error = e);
+    if (error) return { error, success: false }
+    else return { success: true };
 }
 
 

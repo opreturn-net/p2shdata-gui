@@ -7,6 +7,21 @@
         "downloadButton": "Download",
         "input_txid_label": "Enter the TXID to download the file:",
         "input_txid_placeholder": "Enter TXID...",
-        "enter_txid_warning": "Please enter a TXID"
+        "enter_txid_warning": "Please enter a valid TXID",
+        "select_folder_to_save_file": "Select a folder to save the file:",
+        "input_password": "Enter your password:",
+        "input_password_placeholder": "Enter password...",
+        "fund_this_address": "Fund this address:",
+        "refresh_balance_button": "Refresh Balance",
+        "copy_address_button": "Copy address",
+        "input_destination_address": "Enter destination address:",
+        "input_destination_address_placeholder": "Enter destination address...",
+        "check_address_button": "Check address",
+        "select_encoding": "Select encoding:",
+        "input_nonce": "Enter a nonce:",
+        "input_nonce_placeholder": "Enter a number...",
+        "select_file_button": "Select file",
+        "file_selected": "File selected:",
+        "send_button": "Send"
     }
 }
