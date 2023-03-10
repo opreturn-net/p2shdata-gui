@@ -2,8 +2,7 @@
 
 A GUI for the p2shdata protocol to extract/publish data from/to the blockchain.
 
-> Note: Currently the app expects to use an RPC connection to a Garlicoin Core Full Node. 
-> This will be changed in the future to use Electrum servers.
+> This is a work in progress. It is not ready.
 
 ## To Use
 
