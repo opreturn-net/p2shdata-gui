@@ -39,7 +39,6 @@ async function startDownloadTab(downloadTab) {
             const selectedFolder = selectFolder();
             if (selectedFolder) {
                 let txid = inputBox.text();
-                txid = '714e6617bc1ff393b3bb0c4be858831b66a633a537a9363796375852cacbd9bb';
                 await getP2SHDATA(txid, selectedFolder);
             }
         } else {
@@ -52,7 +51,6 @@ async function startDownloadTab(downloadTab) {
             const selectedFolder = selectFolder();
             if (selectedFolder) {
                 let txid = inputBox.text();
-                txid = '714e6617bc1ff393b3bb0c4be858831b66a633a537a9363796375852cacbd9bb';
                 await getP2SHDATA(txid, selectedFolder);
             }
         } else {
@@ -67,9 +65,9 @@ async function startDownloadTab(downloadTab) {
             outputText.append(p2shdata.error);
             return;
         } else {
-            outputText.append('Saved file: ' + p2shdata.file_location + '\n');
-            inputBox.clear();
+            outputText.append('Saved file: ' + p2shdata.file_location);
             outputText.append('P2SHDATA:\n' + JSON.stringify(p2shdata.title, undefined, 4));
+            inputBox.clear();
         }
     }
 

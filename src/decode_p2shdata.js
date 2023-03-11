@@ -9,8 +9,8 @@ async function decodeP2SHDATA(txid, folder) {
     const connect = await connectToElectrum();
     if (connect.error) return { error: JSON.stringify(connect.error, undefined, 4) };
     let rawTx = await client.blockchainTransaction_get(txid).catch((err) => { return { error: JSON.stringify(err, undefined, 4) } });
-    if (rawTx.error) return { error: rawTx.error };
     client.close();
+    if (rawTx.error) return { error: rawTx.error };
     let tx = garlicore.Transaction(rawTx).toObject();
     let title = tx.outputs.filter((vout) => { return vout.satoshis == 0 })[0].script;
     let data_array = tx.inputs.map((vin) => { return vin.script });

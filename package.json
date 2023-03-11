@@ -4,7 +4,6 @@
   "main": "index.js",
   "author": "MaxPuig",
   "license": "MIT",
-  "private": true,
   "scripts": {
     "build": "webpack --mode production && nodegui-packer --init P2SHDATA-GUI && nodegui-packer --pack ./dist",
     "start": "webpack && qode ./dist/index.js",
@@ -13,7 +12,8 @@
   "dependencies": {
     "@nodegui/nodegui": "^0.57.1",
     "@samouraiwallet/electrum-client": "^1.3.0",
-    "bitcore-lib-grlc": "^1.0.3"
+    "bitcore-lib-grlc": "^1.0.3",
+    "garlicoinjs-lib": "^1.0.1"
   },
   "devDependencies": {
     "@nodegui/packer": "^1.5.0",
