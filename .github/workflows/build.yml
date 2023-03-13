@@ -11,7 +11,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        os: [windows-latest] #, macos-latest, ubuntu-latest]
 
     steps:
       - uses: actions/checkout@v3
@@ -46,7 +46,7 @@ jobs:
         run: npm run build
 
       # Rename executable for windows
-      - name: Rename executable
+      - name: Rename executable Windows
         if: matrix.os == 'windows-latest'
         run: |
           mv ./deploy/win32/build/P2SHDATA-GUI/qode.exe ./deploy/win32/build/P2SHDATA-GUI/P2SHDATA-GUI.exe

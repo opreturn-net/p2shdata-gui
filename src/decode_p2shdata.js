@@ -1,6 +1,6 @@
 import { ElectrumClient } from '@samouraiwallet/electrum-client';
-import garlicore from 'bitcore-lib-grlc';
-import fs from 'fs';
+import { Transaction } from 'bitcore-lib-grlc';
+import { writeFileSync } from 'fs';
 const client = new ElectrumClient(50002, 'electrum.maxpuig.com', 'ssl');
 
 
@@ -11,7 +11,7 @@ async function decodeP2SHDATA(txid, folder) {
     let rawTx = await client.blockchainTransaction_get(txid).catch((err) => { return { error: JSON.stringify(err, undefined, 4) } });
     client.close();
     if (rawTx.error) return { error: rawTx.error };
-    let tx = garlicore.Transaction(rawTx).toObject();
+    let tx = Transaction(rawTx).toObject();
     let title = tx.outputs.filter((vout) => { return vout.satoshis == 0 })[0].script;
     let data_array = tx.inputs.map((vin) => { return vin.script });
     let data = '';
@@ -19,7 +19,7 @@ async function decodeP2SHDATA(txid, folder) {
         data += cutScript(cutScript(chunk));
     }
     let decodedTitle = decodeTitle(title);
-    fs.writeFileSync(folder + '/' + decodedTitle.filename + '.' + decodedTitle.filetype, Buffer.from(data, "hex"));
+    writeFileSync(folder + '/' + decodedTitle.filename + '.' + decodedTitle.filetype, Buffer.from(data, "hex"));
     console.log(`File saved: ${folder}/${decodedTitle.filename}.${decodedTitle.filetype}`);
     return { file_location: `${folder}/${decodedTitle.filename}.${decodedTitle.filetype}`, title: decodedTitle };
 }

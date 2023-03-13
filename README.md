@@ -26,6 +26,7 @@ npm install
 npm start
 
 # If you want to build the app
-# You will find the executable in the ./deploy/{platform}/build folder
 npm run build
+# You will find the executable in the ./deploy/{platform}/build folder.
+# Windows: .exe, Linux: .AppImage, Mac: .dmg
 ```
