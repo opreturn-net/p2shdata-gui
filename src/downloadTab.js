@@ -1,10 +1,10 @@
 import {
     QWidget, QPushButton, QLabel, QLineEdit, QTextEdit, Direction,
-    QFileDialog, QMessageBox, ButtonRole, FileMode, QBoxLayout,
-    QScrollArea
+    QFileDialog, FileMode, QBoxLayout, QScrollArea
 } from '@nodegui/nodegui';
 import { decodeP2SHDATA } from './decode_p2shdata.js';
 import textLanguages from './textLanguages.json' assert { type: "json" };
+import { warningWindow } from './utils.js';
 let text = textLanguages['english'];
 
 async function startDownloadTab(downloadTab) {
@@ -16,7 +16,7 @@ async function startDownloadTab(downloadTab) {
     const inputBox = new QLineEdit();
     const downloadButton = new QPushButton();
     const outputText = new QTextEdit();
-    
+
     inputLabel.setText(text.input_txid_label);
     inputBox.setPlaceholderText(text.input_txid_placeholder);
     downloadButton.setText(text.downloadButton);
@@ -29,7 +29,7 @@ async function startDownloadTab(downloadTab) {
     innerLayout.addWidget(inputBox);
     innerLayout.addWidget(downloadButton);
     innerLayout.addWidget(outputText);
-    
+
     downloadTabLayout.addWidget(scrollArea);
     downloadTab.setLayout(downloadTabLayout);
 
@@ -59,13 +59,13 @@ async function startDownloadTab(downloadTab) {
     });
 
     async function getP2SHDATA(txid, selectedFolder) {
-        outputText.append('\nTXID: ' + txid);
+        outputText.append('TXID: ' + txid);
         let p2shdata = await decodeP2SHDATA(txid, selectedFolder);
         if (p2shdata.error) {
             outputText.append(p2shdata.error);
             return;
         } else {
-            outputText.append('Saved file: ' + p2shdata.file_location);
+            outputText.append(text.saved_file + ' ' + p2shdata.file_location);
             outputText.append('P2SHDATA:\n' + JSON.stringify(p2shdata.title, undefined, 4));
             inputBox.clear();
         }
@@ -78,16 +78,6 @@ async function startDownloadTab(downloadTab) {
         if (fileDialog.exec() == 0) return;
         const selectedFolder = fileDialog.selectedFiles()[0];
         return selectedFolder;
-    }
-
-    function warningWindow(message) {
-        const msgBox = new QMessageBox();
-        msgBox.setText(message);
-        msgBox.setWindowTitle('Warning');
-        const accept = new QPushButton();
-        accept.setText('Ok');
-        msgBox.addButton(accept, ButtonRole.AcceptRole);
-        msgBox.exec();
     }
 }
 

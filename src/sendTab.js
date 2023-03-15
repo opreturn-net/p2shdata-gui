@@ -6,7 +6,8 @@ import textLanguages from './textLanguages.json' assert { type: "json" };
 import { Address, PrivateKey, } from 'bitcore-lib-grlc';
 import { BN } from 'bitcore-lib-grlc/lib/crypto/bn';
 import { sha256 } from 'bitcore-lib-grlc/lib/crypto/hash';
-import { getBalance } from './utils.js';
+import { getBalance, warningWindow } from './utils.js';
+import { sendP2SHDATA } from './encode_p2shdata.js';
 
 let text = textLanguages['english'];
 
@@ -152,6 +153,7 @@ async function startSendTab(sendTab) {
     websiteInputBox.setToolTip(text.website_tooltip);
     fileInfoLayout.addLayout(websiteLayout);
 
+    /* For now version will be set to 1
     const versionLayout = new QBoxLayout(Direction.LeftToRight);
     const versionLabel = new QLabel();
     const versionInputBox = new QLineEdit();
@@ -162,6 +164,7 @@ async function startSendTab(sendTab) {
     versionLabel.setToolTip(text.version_tooltip);
     versionInputBox.setToolTip(text.version_tooltip);
     fileInfoLayout.addLayout(versionLayout);
+    */
 
     innerLayout.addLayout(fileInfoLayout);
 
@@ -188,7 +191,7 @@ async function startSendTab(sendTab) {
     checkBalanceButton.addEventListener('clicked', async () => {
         if (addressFromPasswordLabel.text() === '') return;
         let balance = await getBalance(addressFromPasswordLabel.text());
-        balanceLabel.setText(balance);
+        balanceLabel.setText(balance + ' GRLC');
     });
 
     copyAddressButton.addEventListener('clicked', () => {
@@ -244,17 +247,43 @@ async function startSendTab(sendTab) {
         websiteInputBox.setText(website);
     });
 
+    /* For now, version will be set to 1
     versionInputBox.addEventListener('textChanged', (version) => {
         // Allow only numbers
         version = version.replace(/[^0-9]/g, '');
         if (Number(version) > 65535) version = '1'; // maximum 2 bytes hex
         versionInputBox.setText(version);
     });
+    */
 
     sendButton.addEventListener('clicked', async () => {
-        // TODO: Send file
+        const password = passwordInputBox.text();
+        const encodings = { 'Base64': '64', 'HEX': '16', 'Base10': '10', 'UTF-8': 'f8', 'ASCII': 'f8' }
+        const encoding = encodings[encodingBox.currentText()];
+        const website = websiteInputBox.text();
+        const protocol = '/p2shdata';
+        const version = '1'; // const version = versionInputBox.text();
+        const filename = filenameInputBox.text();
+        const filetype = filetypeExtensionInputBox.text();
+        const filepath = fileNameLabel.text(); // 
+        const salt_decimal = saltInputBox.text();
+        const destAddr = destAddrBox.text();
+        if (password == '') { warningWindow('Password is required'); return; }
+        if (destAddr == '') {
+            output.append('Destination address is required'); return;
+        } else {
+            try { Address.fromString(destAddr); }
+            catch (err) { warningWindow('Destination address is not valid'); return; }
+        }
+        if (salt_decimal == '') { warningWindow(text.salt_required_warning); return; }
+        if (filepath == 'NONE') { warningWindow(text.file_required_warning); return; }
+        if (filename == '') { warningWindow(text.filename_required_warning); return; }
+        if (filetype == '') { warningWindow(text.filetype_required_warning); return; }
+        if (website == '') { warningWindow(text.website_required_warning); return; }
+        let result = await sendP2SHDATA(password, encoding, website, protocol, version, filename, filetype,
+            filepath, salt_decimal, destAddr, output);
+        if (result.error) output.append(result.error)
     });
-
 }
 
 

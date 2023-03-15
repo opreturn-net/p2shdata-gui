@@ -1,6 +1,7 @@
 import { ElectrumClient } from '@samouraiwallet/electrum-client';
 import { sha256 } from 'garlicoinjs-lib/src/crypto.js';
 import { toOutputScript } from 'garlicoinjs-lib/src/address.js';
+import { QPushButton, QMessageBox, ButtonRole } from '@nodegui/nodegui';
 const client = new ElectrumClient(50002, 'electrum.maxpuig.com', 'ssl');
 
 
@@ -12,7 +13,7 @@ async function getBalance(address) {
         .catch((err) => { error = err; });
     client.close();
     if (error) return 'Electrum error';
-    return ((balance.confirmed + balance.unconfirmed) / 100_000_000) + ' GRLC';
+    return ((balance.confirmed + balance.unconfirmed) / 100_000_000);
 }
 
 
@@ -32,4 +33,15 @@ async function connectToElectrum() {
 }
 
 
-export { getBalance }
+function warningWindow(message) {
+    const msgBox = new QMessageBox();
+    msgBox.setText(message);
+    msgBox.setWindowTitle('Warning');
+    const accept = new QPushButton();
+    accept.setText('Ok');
+    msgBox.addButton(accept, ButtonRole.AcceptRole);
+    msgBox.exec();
+}
+
+
+export { getBalance, warningWindow, convertToScripthash }
