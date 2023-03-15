@@ -2,7 +2,8 @@ import { ElectrumClient } from '@samouraiwallet/electrum-client';
 import { Transaction } from 'bitcore-lib-grlc';
 import { writeFileSync } from 'fs';
 const client = new ElectrumClient(50002, 'electrum.maxpuig.com', 'ssl');
-
+import textLanguages from './textLanguages.json' assert { type: "json" };
+let text = textLanguages['english'];
 
 /* Return location and info of file */
 async function decodeP2SHDATA(txid, folder) {
@@ -12,6 +13,8 @@ async function decodeP2SHDATA(txid, folder) {
     client.close();
     if (rawTx.error) return { error: rawTx.error };
     let tx = Transaction(rawTx).toObject();
+    let op_returns = tx.outputs.filter((vout) => { return vout.script.startsWith('6a') })[0] || { script: '' };
+    if (hexToAscii(op_returns.script.slice(30, 50)).replace(/\x00/g, '') != '/p2shdata') return { error: text.not_p2shdata_txid };
     let title = tx.outputs.filter((vout) => { return vout.satoshis == 0 })[0].script;
     let data_array = tx.inputs.map((vin) => { return vin.script });
     let data = '';
@@ -20,7 +23,6 @@ async function decodeP2SHDATA(txid, folder) {
     }
     let decodedTitle = decodeTitle(title);
     writeFileSync(folder + '/' + decodedTitle.filename + '.' + decodedTitle.filetype, Buffer.from(data, "hex"));
-    console.log(`File saved: ${folder}/${decodedTitle.filename}.${decodedTitle.filetype}`);
     return { file_location: `${folder}/${decodedTitle.filename}.${decodedTitle.filetype}`, title: decodedTitle };
 }
 
@@ -53,11 +55,11 @@ function decodeAssemblyScript(entire_assembly_script) {
         encoding = script.slice(6, 10);
         encoding_type = encoding.slice(2, 4);
         if (encoding_type == '64') {
-            encoding_type = 'base64';
+            encoding_type = 'Base64';
         } else if (encoding_type == '16') {
-            encoding_type = 'hex';
+            encoding_type = 'HEX';
         } else if (encoding_type == '10') {
-            encoding_type = 'base10';
+            encoding_type = 'Base10';
         } else if (encoding_type == 'f8') {
             encoding_type = 'UTF-8';
         } else {
