@@ -1,9 +1,10 @@
 import { ElectrumClient } from '@samouraiwallet/electrum-client';
 import { Transaction } from 'bitcore-lib-grlc';
 import { writeFileSync } from 'fs';
-const client = new ElectrumClient(50002, 'electrum.maxpuig.com', 'ssl');
-import textLanguages from './textLanguages.json' assert { type: "json" };
-let text = textLanguages['english'];
+import { getLanguagesJSON } from './readLanguages.js';
+let textLanguages = await getLanguagesJSON();
+let text = textLanguages[textLanguages.selected_language];
+const client = new ElectrumClient(50002, textLanguages.server, 'ssl');
 
 /* Return location and info of file */
 async function decodeP2SHDATA(txid, folder) {

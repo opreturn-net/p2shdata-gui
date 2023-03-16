@@ -1,10 +1,11 @@
 import { readFileSync } from 'fs';
 import garlicore from 'bitcore-lib-grlc';
 import { ElectrumClient } from '@samouraiwallet/electrum-client';
-const client = new ElectrumClient(50002, 'electrum.maxpuig.com', 'ssl');
 import { getBalance, convertToScripthash } from './utils.js';
-import textLanguages from './textLanguages.json' assert { type: "json" };
-let text = textLanguages['english'];
+import { getLanguagesJSON } from './readLanguages.js';
+let textLanguages = await getLanguagesJSON();
+let text = textLanguages[textLanguages.selected_language];
+const client = new ElectrumClient(50002, textLanguages.server, 'ssl');
 
 const destination_address_fee = 500_000; // 0.005 GRLC
 const origin_address_fee = 500_000; // 0.005 GRLC
@@ -29,7 +30,6 @@ async function sendP2SHDATA(password, encoding, website, protocol, version, file
             address_and_redeemscript, privateKey, destination_address, op_return, outputBox);
         return { success: true };
     } catch (error) {
-        console.log(error);
         return { error: error.toString() };
     }
 }

@@ -2,14 +2,14 @@ import {
     QWidget, QPushButton, QLabel, QLineEdit, QTextEdit, FileMode, QFileDialog,
     Direction, QBoxLayout, QScrollArea, QComboBox, QApplication
 } from '@nodegui/nodegui';
-import textLanguages from './textLanguages.json' assert { type: "json" };
 import { Address, PrivateKey, } from 'bitcore-lib-grlc';
 import { BN } from 'bitcore-lib-grlc/lib/crypto/bn';
 import { sha256 } from 'bitcore-lib-grlc/lib/crypto/hash';
 import { getBalance, warningWindow } from './utils.js';
 import { sendP2SHDATA } from './encode_p2shdata.js';
-
-let text = textLanguages['english'];
+import { getLanguagesJSON } from './readLanguages.js';
+let textLanguages = await getLanguagesJSON();
+let text = textLanguages[textLanguages.selected_language];
 
 async function startSendTab(sendTab) {
     const sendTabLayout = new QBoxLayout(Direction.TopToBottom);
@@ -103,15 +103,16 @@ async function startSendTab(sendTab) {
 
     // Select File
     const selectFileLayout = new QBoxLayout(Direction.LeftToRight);
-    const selectFileButton = new QPushButton();
-    selectFileButton.setText(text.select_file_button);
     const fileNameTitleLabel = new QLabel();
     const fileNameLabel = new QLabel();
     fileNameTitleLabel.setText(text.file_selected);
-    fileNameLabel.setText('NONE');
-    selectFileLayout.addWidget(selectFileButton);
+    fileNameLabel.setText(text.no_file_selected);
+    const selectFileButton = new QPushButton();
+    selectFileButton.setText(text.select_file_button);
     selectFileLayout.addWidget(fileNameTitleLabel);
     selectFileLayout.addWidget(fileNameLabel);
+    selectFileLayout.addStretch(1);
+    selectFileLayout.addWidget(selectFileButton);
     selectFileButton.setToolTip(text.select_file_tooltip);
     fileNameTitleLabel.setToolTip(text.select_file_tooltip);
 

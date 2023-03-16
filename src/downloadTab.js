@@ -3,9 +3,10 @@ import {
     QFileDialog, FileMode, QBoxLayout, QScrollArea
 } from '@nodegui/nodegui';
 import { decodeP2SHDATA } from './decode_p2shdata.js';
-import textLanguages from './textLanguages.json' assert { type: "json" };
 import { warningWindow } from './utils.js';
-let text = textLanguages['english'];
+import { getLanguagesJSON } from './readLanguages.js';
+let textLanguages = await getLanguagesJSON();
+let text = textLanguages[textLanguages.selected_language];
 
 async function startDownloadTab(downloadTab) {
     const downloadTabLayout = new QBoxLayout(Direction.TopToBottom);
