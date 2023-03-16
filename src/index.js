@@ -6,8 +6,11 @@ let text = textLanguages[textLanguages.selected_language];
 const { startDownloadTab } = await import('./downloadTab.js');
 const { startSendTab } = await import('./sendTab.js');
 const { startSettingsTab } = await import('./settingsTab.js');
+import logo from '../assets/logo.png';
 
 const win = new QMainWindow();
+const appIcon = new QIcon(logo);
+win.setWindowIcon(appIcon);
 win.setWindowTitle(text.windowTitle);
 win.resize(800, 600);
 

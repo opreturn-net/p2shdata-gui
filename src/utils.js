@@ -1,8 +1,9 @@
 import { ElectrumClient } from '@samouraiwallet/electrum-client';
 import { sha256 } from 'garlicoinjs-lib/src/crypto.js';
 import { toOutputScript } from 'garlicoinjs-lib/src/address.js';
-import { QPushButton, QMessageBox, ButtonRole } from '@nodegui/nodegui';
+import { QPushButton, QMessageBox, QIcon, ButtonRole } from '@nodegui/nodegui';
 import { getLanguagesJSON } from './readLanguages.js';
+import warning_logo from '../assets/warning.png';
 let textLanguages = await getLanguagesJSON();
 const client = new ElectrumClient(50002, textLanguages.server, 'ssl');
 
@@ -39,9 +40,10 @@ function warningWindow(message) {
     const msgBox = new QMessageBox();
     msgBox.setText(message);
     msgBox.setWindowTitle('Warning');
-    const accept = new QPushButton();
-    accept.setText('Ok');
-    msgBox.addButton(accept, ButtonRole.AcceptRole);
+    const acceptButton = new QPushButton();
+    acceptButton.setText('Ok');
+    msgBox.addButton(acceptButton, ButtonRole.AcceptRole);
+    msgBox.setWindowIcon(new QIcon(warning_logo));
     msgBox.exec();
 }
 
