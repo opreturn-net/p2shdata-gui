@@ -1,6 +1,6 @@
 import {
     QBoxLayout, Direction, QLabel, QComboBox,
-    QScrollArea, QWidget, QLineEdit, QPushButton
+    QScrollArea, QWidget, QLineEdit, QPushButton, QCheckBox
 } from '@nodegui/nodegui';
 import { writeFileSync } from 'fs';
 import { warningWindow } from './utils.js';
@@ -45,8 +45,21 @@ async function startSettingsTab(settingsTab) {
     connectToServerButton.setText(text.check_connection_button);
     serverSettingsLayout.addWidget(connectToServerButton);
 
-
     innerLayout.addLayout(serverSettingsLayout);
+
+    // Advanced TXID checkbox
+    const advancedTXIDSettingsLayout = new QBoxLayout(Direction.LeftToRight);
+    const advancedTXIDLabel = new QLabel();
+    advancedTXIDLabel.setText(text.advanced_txid_settings);
+    advancedTXIDSettingsLayout.addWidget(advancedTXIDLabel);
+    advancedTXIDLabel.setToolTip(text.advanced_txid_settings_tooltip);
+    advancedTXIDSettingsLayout.addStretch(1);
+    const advancedTXIDCheckbox = new QCheckBox();
+    advancedTXIDCheckbox.setChecked(textLanguages.settings.show_advanced_txid);
+    advancedTXIDSettingsLayout.addWidget(advancedTXIDCheckbox);
+    advancedTXIDCheckbox.setToolTip(text.advanced_txid_settings_tooltip);
+
+    innerLayout.addLayout(advancedTXIDSettingsLayout);
 
     // Save
     const saveSettingsLayout = new QBoxLayout(Direction.LeftToRight);
@@ -68,6 +81,7 @@ async function startSettingsTab(settingsTab) {
     saveSettingsButton.addEventListener('clicked', () => {
         textLanguages.selected_language = languageComboBox.currentText();
         textLanguages.server = inputServerSettings.text();
+        textLanguages.settings.show_advanced_txid = advancedTXIDCheckbox.isChecked();
         saveSettingsButton.setText(text.save_settings_button);
         // save to file
         writeFileSync('./textLanguages.json', JSON.stringify(textLanguages));

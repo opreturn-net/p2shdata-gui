@@ -75,6 +75,38 @@ async function startSendTab(sendTab) {
 
     innerLayout.addLayout(destinationAddressLayout);
 
+    // Advanced TXID
+    const advancedTXIDLayout = new QBoxLayout(Direction.LeftToRight);
+    const advancedTXIDLabel = new QLabel();
+    advancedTXIDLabel.setText(text.input_advanced_txid);
+    const advancedTXIDBox = new QLineEdit();
+    advancedTXIDBox.setPlaceholderText(text.input_advanced_txid_placeholder);
+    advancedTXIDLayout.addWidget(advancedTXIDLabel);
+    advancedTXIDLayout.addWidget(advancedTXIDBox);
+    advancedTXIDLabel.setToolTip(text.advanced_txid_settings_tooltip);
+    advancedTXIDBox.setToolTip(text.advanced_txid_settings_tooltip);
+
+    if (textLanguages.settings.show_advanced_txid) {
+        innerLayout.addLayout(advancedTXIDLayout);
+    }
+
+    // Select File
+    const selectFileLayout = new QBoxLayout(Direction.LeftToRight);
+    const fileNameTitleLabel = new QLabel();
+    const fileNameLabel = new QLabel();
+    fileNameTitleLabel.setText(text.file_selected);
+    fileNameLabel.setText(text.no_file_selected);
+    const selectFileButton = new QPushButton();
+    selectFileButton.setText(text.select_file_button);
+    selectFileLayout.addWidget(fileNameTitleLabel);
+    selectFileLayout.addWidget(fileNameLabel);
+    // selectFileLayout.addStretch(1);
+    selectFileLayout.addWidget(selectFileButton);
+    selectFileButton.setToolTip(text.select_file_tooltip);
+    fileNameTitleLabel.setToolTip(text.select_file_tooltip);
+
+    innerLayout.addLayout(selectFileLayout);
+
     // Encoding
     const encodingLayout = new QBoxLayout(Direction.LeftToRight);
     const encodingLabel = new QLabel();
@@ -100,23 +132,6 @@ async function startSendTab(sendTab) {
     saltInputBox.setToolTip(text.salt_tooltip);
 
     innerLayout.addLayout(saltLayout);
-
-    // Select File
-    const selectFileLayout = new QBoxLayout(Direction.LeftToRight);
-    const fileNameTitleLabel = new QLabel();
-    const fileNameLabel = new QLabel();
-    fileNameTitleLabel.setText(text.file_selected);
-    fileNameLabel.setText(text.no_file_selected);
-    const selectFileButton = new QPushButton();
-    selectFileButton.setText(text.select_file_button);
-    selectFileLayout.addWidget(fileNameTitleLabel);
-    selectFileLayout.addWidget(fileNameLabel);
-    selectFileLayout.addStretch(1);
-    selectFileLayout.addWidget(selectFileButton);
-    selectFileButton.setToolTip(text.select_file_tooltip);
-    fileNameTitleLabel.setToolTip(text.select_file_tooltip);
-
-    innerLayout.addLayout(selectFileLayout);
 
     // Filename, filetypeExtension, website, version
     const fileInfoLayout = new QBoxLayout(Direction.TopToBottom);
@@ -281,8 +296,12 @@ async function startSendTab(sendTab) {
         if (filename == '') { warningWindow(text.filename_required_warning); return; }
         if (filetype == '') { warningWindow(text.filetype_required_warning); return; }
         if (website == '') { warningWindow(text.website_required_warning); return; }
+        let first_txid;
+        if (textLanguages.settings.show_advanced_txid) {
+            first_txid = advancedTXIDBox.text();
+        }
         let result = await sendP2SHDATA(password, encoding, website, protocol, version, filename, filetype,
-            filepath, salt_decimal, destAddr, output);
+            filepath, salt_decimal, destAddr, first_txid, output);
         if (result.error) output.append(result.error)
     });
 }

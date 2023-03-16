@@ -5,6 +5,9 @@
     ],
     "selected_language": "english",
     "server": "electrum.maxpuig.com",
+    "settings": {
+        "show_advanced_txid": false
+    },
     "english": {
         "windowTitle": "P2SHDATA GUI",
         "downloadTabTitle": "Download",
@@ -26,8 +29,11 @@
         "copy_address_button": "Copy Address",
         "input_destination_address": "Enter destination address:",
         "input_destination_address_placeholder": "Destination address...",
-        "destination_address_tooltip": "The address where the coins will be sent once the file is uploaded to the blockchain.",
+        "destination_address_tooltip": "The address where the coins will be sent\nonce the file is uploaded to the blockchain.",
         "check_address_button": "Check Address",
+        "input_advanced_txid": "Enter first TXID:",
+        "input_advanced_txid_placeholder": "First TXID... Leave empty if you don't know what this is.",
+        "first_txid_provided": "First TXID provided. Skipping first broadcast.",
         "select_encoding": "Select encoding:",
         "encoding_tooltip": "Select the encoding of the file you want to upload.",
         "input_salt": "Enter salt:",
@@ -82,6 +88,8 @@
         "check_connection_button": "Check Connection",
         "connected_to_server": "Connected to server",
         "could_not_connect_to_server": "Could not connect to server",
+        "advanced_txid_settings": "Show advanced TXID setting:",
+        "advanced_txid_settings_tooltip": "If the second transaction fails, but not the\nfirst one, you can use the TXID of the first\ntransaction to broadcast the second tansaction.",
         "save_settings_button": "Save",
         "restart_to_apply_warning": "Restart the application to apply the changes."
     },
@@ -106,8 +114,11 @@
         "copy_address_button": "Copiar Dirección",
         "input_destination_address": "Introduzca la dirección de destino:",
         "input_destination_address_placeholder": "Dirección de destino...",
-        "destination_address_tooltip": "La dirección donde se enviarán las monedas una vez que el archivo se haya subido a la blockchain.",
+        "destination_address_tooltip": "La dirección donde se enviarán las monedas\nuna vez que el archivo se haya subido a la blockchain.",
         "check_address_button": "Comprobar Dirección",
+        "input_advanced_txid": "Introduzca el primer TXID:",
+        "input_advanced_txid_placeholder": "Primer TXID... Déjelo vacío si no sabe lo que es.",
+        "first_txid_provided": "Primer TXID proporcionado. Omitinedo la primera transmisión.",
         "select_encoding": "Seleccione la codificación:",
         "encoding_tooltip": "Seleccione la codificación del archivo que desee cargar.",
         "input_salt": "Introduzca un número aleatorio:",
@@ -162,6 +173,8 @@
         "check_connection_button": "Comprobar Conexión",
         "connected_to_server": "Conexión al servidor exitosa",
         "could_not_connect_to_server": "No se pudo conectar al servidor",
+        "advanced_txid_settings": "Mostrar configuración avanzada de TXID:",
+        "advanced_txid_settings_tooltip": "Si la segunda transacción falla, pero\nno la primera, puede utilizar el TXID de la\nprimera transacción para emitir la segunda.",
         "save_settings_button": "Guardar",
         "restart_to_apply_warning": "Reinicie la aplicación para aplicar los cambios."
     }
