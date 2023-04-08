@@ -6,12 +6,11 @@ import { ElectrumClient } from '@samouraiwallet/electrum-client';
 import { getBalance, convertToScripthash } from './utils.js';
 import { getLanguagesJSON } from './readLanguages.js';
 let textLanguages = await getLanguagesJSON();
-let text = textLanguages[textLanguages.selected_language];
-const client = new ElectrumClient(50002, textLanguages.server, 'ssl');
+let text = textLanguages[textLanguages.settings.selected_language];
+const client = new ElectrumClient(50002, textLanguages.settings.server, 'ssl');
 
-const destination_address_fee = 500_000; // 0.005 GRLC
-const origin_address_fee = 500_000; // 0.005 GRLC
-
+const destination_address_fee = textLanguages.settings.destination_address_fee;
+const origin_address_fee = textLanguages.settings.origin_address_fee;
 
 async function sendP2SHDATA(password, encoding, website, protocol, version, filename, filetype, filepath,
     salt_decimal, destination_address, first_txid, outputBox) {
@@ -22,6 +21,7 @@ async function sendP2SHDATA(password, encoding, website, protocol, version, file
         const origin_address_string = origin_address.toString();
         if (!first_txid) {
             let origin_address_balance = await getBalance(origin_address_string);
+            if (origin_address_balance === 'Electrum error') throw new Error('Electrum error "getBalance"');
             if (origin_address_balance < origin_address_fee / 100_000_000) throw new Error(text.needs_more_funds);
         }
         const file = readFileSync(filepath, 'hex');
@@ -34,10 +34,9 @@ async function sendP2SHDATA(password, encoding, website, protocol, version, file
             address_and_redeemscript, privateKey, destination_address, op_return, first_txid, outputBox);
         return { success: true };
     } catch (error) {
-        return { error: error.toString() };
+        return { error: JSON.stringify(error) };
     }
 }
-
 
 async function encodeP2SHDATA(origin_address_string, origin_address, origin_address_fee,
     address_and_redeemscript, privateKey, destination_address, op_return, first_txid, outputBox) {
@@ -76,19 +75,19 @@ async function encodeP2SHDATA(origin_address_string, origin_address, origin_addr
         let serialized_tx_temp = tx_temp.toString();
         outputBox.append(text.broadcast_first_tx);
         let multiple_addresses_funded_txid = await client.blockchainTransaction_broadcast(serialized_tx_temp);
+        if (multiple_addresses_funded_txid.message) throw new Error(multiple_addresses_funded_txid.message);
         client.close();
         outputBox.append(text.txid_all_addresses + ' ' + multiple_addresses_funded_txid);
-        outputBox.append(text.wait_seconds_confirm);
-        await sleep(5000);
+        outputBox.append(text.waiting + ' ' + textLanguages.settings.time_between_txs_seconds + ' ' + text.wait_seconds_confirm);
+        await sleep(Number(textLanguages.settings.time_between_txs_seconds) * 1000);
         await multipleAddressesFunded(multiple_addresses_funded_txid, address_and_redeemscript,
             destination_address, destination_address_fee, op_return, outputBox);
         return;
     } catch (e) {
         client.close();
-        throw new Error(e);
+        throw new Error(JSON.stringify(e));
     }
 }
-
 
 async function multipleAddressesFunded(multiple_addresses_funded_txid, address_and_redeemscript,
     destination_address, destination_address_fee, op_return, outputBox) {
@@ -120,15 +119,15 @@ async function multipleAddressesFunded(multiple_addresses_funded_txid, address_a
         let serialized_tx = tx.toString();
         outputBox.append(text.broadcast_final_tx);
         let txid = await client.blockchainTransaction_broadcast(serialized_tx);
+        if (txid.message) throw new Error(txid.message);
         outputBox.append(text.txid_is + ' ' + txid);
         client.close();
         return;
     } catch (e) {
         client.close();
-        throw new Error(e);
+        throw new Error(JSON.stringify(e));
     }
 }
-
 
 function getAddressesAndRedeemScripts(chunks, salt) {
     let info = [];

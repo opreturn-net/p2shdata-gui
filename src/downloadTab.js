@@ -6,7 +6,7 @@ import { decodeP2SHDATA } from './decode_p2shdata.js';
 import { warningWindow } from './utils.js';
 import { getLanguagesJSON } from './readLanguages.js';
 let textLanguages = await getLanguagesJSON();
-let text = textLanguages[textLanguages.selected_language];
+let text = textLanguages[textLanguages.settings.selected_language];
 
 async function startDownloadTab(downloadTab) {
     const downloadTabLayout = new QBoxLayout(Direction.TopToBottom);

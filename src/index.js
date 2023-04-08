@@ -1,7 +1,7 @@
 import { QMainWindow, QTabWidget, QIcon, QWidget } from '@nodegui/nodegui';
 import { setLanguagesJson } from './readLanguages.js';
 let textLanguages = await setLanguagesJson();
-let text = textLanguages[textLanguages.selected_language];
+let text = textLanguages[textLanguages.settings.selected_language];
 // Using dynamic import to load tabs asynchronously so the textLanguages.json file can be loaded first
 const { startDownloadTab } = await import('./downloadTab.js');
 const { startSendTab } = await import('./sendTab.js');

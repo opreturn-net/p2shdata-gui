@@ -9,7 +9,7 @@ import { getBalance, warningWindow } from './utils.js';
 import { sendP2SHDATA } from './encode_p2shdata.js';
 import { getLanguagesJSON } from './readLanguages.js';
 let textLanguages = await getLanguagesJSON();
-let text = textLanguages[textLanguages.selected_language];
+let text = textLanguages[textLanguages.settings.selected_language];
 
 async function startSendTab(sendTab) {
     const sendTabLayout = new QBoxLayout(Direction.TopToBottom);
@@ -302,9 +302,8 @@ async function startSendTab(sendTab) {
         }
         let result = await sendP2SHDATA(password, encoding, website, protocol, version, filename, filetype,
             filepath, salt_decimal, destAddr, first_txid, output);
-        if (result.error) output.append(result.error)
+        if (result.error) output.append('An error occurred: ' + result.error);
     });
 }
-
 
 export { startSendTab };

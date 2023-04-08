@@ -7,7 +7,7 @@ import { warningWindow } from './utils.js';
 import { ElectrumClient } from '@samouraiwallet/electrum-client';
 import { getLanguagesJSON } from './readLanguages.js';
 let textLanguages = await getLanguagesJSON();
-let text = textLanguages[textLanguages.selected_language];
+let text = textLanguages[textLanguages.settings.selected_language];
 
 async function startSettingsTab(settingsTab) {
     const settingsTabLayout = new QBoxLayout(Direction.TopToBottom);
@@ -38,7 +38,7 @@ async function startSettingsTab(settingsTab) {
     serverLabel.setText(text.input_server_settings);
     serverSettingsLayout.addWidget(serverLabel);
     const inputServerSettings = new QLineEdit();
-    inputServerSettings.setText(textLanguages.server);
+    inputServerSettings.setText(textLanguages.settings.server);
     inputServerSettings.setPlaceholderText(text.input_server_settings_placeholder);
     serverSettingsLayout.addWidget(inputServerSettings);
     const connectToServerButton = new QPushButton();
@@ -79,8 +79,8 @@ async function startSettingsTab(settingsTab) {
     });
 
     saveSettingsButton.addEventListener('clicked', () => {
-        textLanguages.selected_language = languageComboBox.currentText();
-        textLanguages.server = inputServerSettings.text();
+        textLanguages.settings.selected_language = languageComboBox.currentText();
+        textLanguages.settings.server = inputServerSettings.text();
         textLanguages.settings.show_advanced_txid = advancedTXIDCheckbox.isChecked();
         saveSettingsButton.setText(text.save_settings_button);
         // save to file
@@ -103,6 +103,5 @@ async function startSettingsTab(settingsTab) {
         else return { success: true };
     }
 }
-
 
 export { startSettingsTab };

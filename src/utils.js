@@ -5,8 +5,7 @@ import { QPushButton, QMessageBox, QIcon, ButtonRole } from '@nodegui/nodegui';
 import { getLanguagesJSON } from './readLanguages.js';
 import warning_logo from '../assets/warning.png';
 let textLanguages = await getLanguagesJSON();
-const client = new ElectrumClient(50002, textLanguages.server, 'ssl');
-
+const client = new ElectrumClient(50002, textLanguages.settings.server, 'ssl');
 
 async function getBalance(address) {
     await connectToElectrum();
@@ -19,11 +18,9 @@ async function getBalance(address) {
     return ((balance.confirmed + balance.unconfirmed) / 100_000_000);
 }
 
-
 function convertToScripthash(address) {
     return Buffer.from(sha256(toOutputScript(address)).reverse()).toString('hex');
 }
-
 
 async function connectToElectrum() {
     let error;
@@ -35,7 +32,6 @@ async function connectToElectrum() {
     else return { success: true };
 }
 
-
 function warningWindow(message) {
     const msgBox = new QMessageBox();
     msgBox.setText(message);
@@ -46,6 +42,5 @@ function warningWindow(message) {
     msgBox.setWindowIcon(new QIcon(warning_logo));
     msgBox.exec();
 }
-
 
 export { getBalance, warningWindow, convertToScripthash }

@@ -3,8 +3,8 @@ import { Transaction } from 'bitcore-lib-grlc';
 import { writeFileSync } from 'fs';
 import { getLanguagesJSON } from './readLanguages.js';
 let textLanguages = await getLanguagesJSON();
-let text = textLanguages[textLanguages.selected_language];
-const client = new ElectrumClient(50002, textLanguages.server, 'ssl');
+let text = textLanguages[textLanguages.settings.selected_language];
+const client = new ElectrumClient(50002, textLanguages.settings.server, 'ssl');
 
 /* Return location and info of file */
 async function decodeP2SHDATA(txid, folder) {
@@ -27,7 +27,6 @@ async function decodeP2SHDATA(txid, folder) {
     return { file_location: `${folder}/${decodedTitle.filename}.${decodedTitle.filetype}`, title: decodedTitle };
 }
 
-
 function decodeTitle(vout_string) {
     let hex = vout_string.slice(6); // remove the first 3 bytes (OP_CODES)
     let site = hexToAscii(hex.slice(0, 24)).replace(/\x00/g, '');
@@ -42,7 +41,6 @@ function decodeTitle(vout_string) {
     info.assembly_script = decodeAssemblyScript(assembly_script);
     return info;
 }
-
 
 function decodeAssemblyScript(entire_assembly_script) {
     let assembly_script_length = hexToDecimal(entire_assembly_script.slice(0, 2));
@@ -72,15 +70,11 @@ function decodeAssemblyScript(entire_assembly_script) {
     return info;
 }
 
-
 function hexToAscii(hex) { return Buffer.from(hex, 'hex').toString(); }
-
 
 function hexToDecimal(hex) { return parseInt(hex, 16); }
 
-
 function littleEndianToDecimal(hex) { return parseInt(hex.match(/.{2}/g).reverse().join(''), 16); }
-
 
 function cutScript(chunk) {
     let data = '';
@@ -97,7 +91,6 @@ function cutScript(chunk) {
     return data;
 }
 
-
 async function connectToElectrum() {
     let error;
     await client.initElectrum(
@@ -107,6 +100,5 @@ async function connectToElectrum() {
     if (error) return { error, success: false }
     else return { success: true };
 }
-
 
 export { decodeP2SHDATA };

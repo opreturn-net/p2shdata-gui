@@ -3,10 +3,13 @@
         "english",
         "spanish"
     ],
-    "selected_language": "english",
-    "server": "electrum.maxpuig.com",
     "settings": {
-        "show_advanced_txid": false
+        "selected_language": "english",
+        "server": "electrum.maxpuig.com",
+        "show_advanced_txid": false,
+        "destination_address_fee": 5000000,
+        "origin_address_fee": 5000000,
+        "time_between_txs_seconds": 10
     },
     "english": {
         "windowTitle": "P2SHDATA GUI",
@@ -69,7 +72,8 @@
         "file_too_large": "File is too large. Max 88 kB.",
         "broadcast_first_tx": "Broadcasting first transaction...",
         "txid_all_addresses": "Transaction ID funding all the addresses:",
-        "wait_seconds_confirm": "Waiting 5 seconds for the transaction to be confirmed...",
+        "waiting": "Waiting",
+        "wait_seconds_confirm": "seconds for the transaction to be confirmed...",
         "broadcast_final_tx": "Broadcasting final transaction...",
         "txid_is": "Transaction ID:",
         "salt_error_bytes": "Salt must be maximum of 8 bytes hex.",
@@ -154,7 +158,8 @@
         "file_too_large": "El archivo es demasiado grande. Máximo 88 kB.",
         "broadcast_first_tx": "Transmitiendo la primera transacción...",
         "txid_all_addresses": "ID de la transacción que financia todas las direcciones:",
-        "wait_seconds_confirm": "Esperando 5 segundos a que se confirme la transacción...",
+        "waiting": "Esperando",
+        "wait_seconds_confirm": "segundos a que se confirme la transacción...",
         "broadcast_final_tx": "Transmitiendo la transacción final...",
         "txid_is": "ID de la transacción:",
         "salt_error_bytes": "El número aleatorio debe tener un máximo de 8 bytes hex.",
