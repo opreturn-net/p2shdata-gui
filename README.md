@@ -63,9 +63,9 @@ graph LR
 A[Your GRLC] 
 A --> |Fund address|B[Address created\nfrom your password] 
 subgraph many_addresses
-C[Addess]
-D[Addess]
-E[Aaddess]
+C[Address]
+D[Address]
+E[Address]
 end
 B--> C
 B --> |"1st transaction\n(Encrypted data)"|D
