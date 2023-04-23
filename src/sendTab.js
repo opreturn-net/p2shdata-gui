@@ -300,7 +300,7 @@ async function startSendTab(sendTab) {
         if (textLanguages.settings.show_advanced_txid) {
             first_txid = advancedTXIDBox.text();
         }
-        let result = await sendP2SHDATA(password, encoding, website, protocol, version, filename, filetype,
+        const result = await sendP2SHDATA(password, encoding, website, protocol, version, filename, filetype,
             filepath, salt_decimal, destAddr, first_txid, output);
         if (result.error) output.append('An error occurred: ' + result.error);
     });

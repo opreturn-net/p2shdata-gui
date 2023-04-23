@@ -19,7 +19,9 @@ async function startDownloadTab(downloadTab) {
     const outputText = new QTextEdit();
 
     inputLabel.setText(text.input_txid_label);
+    inputLabel.setToolTip(text.input_txid_tooltip);
     inputBox.setPlaceholderText(text.input_txid_placeholder);
+    inputBox.setToolTip(text.input_txid_tooltip);
     downloadButton.setText(text.downloadButton);
     outputText.setReadOnly(true);
 

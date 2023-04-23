@@ -103,15 +103,19 @@ Let's go through all the parameters:
 - `TXID`: This is the Transaction ID of the second transaction. If someone sent you a TXID containing data, this is where you'd put it.
 
 ### Settings
-If you want to change the settings, you can do so by clicking on the "Settings" tab. To apply the changes, you'll have to restart the app.
+If you want to change the settings, you can do so by clicking on the "Settings" tab. To apply the changes, you'll have to **restart** the app.
 Let's go through all the parameters:
 - `Select language`: This is the language of the app. You can select any language you want.
 - `Enter electrum server`: This is the electrum server used to connect to the blockchain. You can use any electrum server you want (As long as it's for Garlicoin).
+- `Time between transactions (seconds)`: This is the time between the first and second transaction. The default is 10 seconds. If you want to make sure the first transaction is confirmed before sending the second one, you can increase this value.
+- `Origin address fee (sats)`: This is the fee of the first transaction. The default is 5000000 Sats.
+- `Destination address fee (sats)`: This is the fee of the second transaction. The default is 5000000 Sats.
 - `Show advanced settings`: This will show advanced settings in the "Send" tab. You can use this to continue a failed transaction. See the description of `Enter first TXID` explained above.
+- `Default Settings`: This will reset all the settings to their default values.
 
 ## TROUBLESHOOTING
 - If you can't send/download data, try changing the electrum server in the "Settings" tab.
-- If the second transaction fails, you can use the TXID of the first transaction to continue the process. See the description of `Enter first TXID` explained above. This option can be enabled in the "Settings" tab by clicking on "Show advanced settings".
+- If the second transaction fails, you can use the TXID of the first transaction to continue the process. See the description of `Enter first TXID` explained in the "Send" section above. This option can be enabled in the "Settings" tab by clicking on "Show advanced settings".
 - If something else goes wrong, please open an issue.
 
 ## HOW TO CONTRIBUTE
