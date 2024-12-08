@@ -112,7 +112,7 @@ async function startSendTab(sendTab) {
     const encodingLabel = new QLabel();
     encodingLabel.setText(text.select_encoding);
     const encodingBox = new QComboBox();
-    encodingBox.addItems(['Base64', 'HEX', 'Base10', 'UTF-8', 'ASCII']);
+    encodingBox.addItems(['ASCII', 'ANSI', 'Base10', 'Base64', 'HEX', 'UTF-8']);
     encodingLayout.addWidget(encodingLabel);
     encodingLayout.addWidget(encodingBox);
     encodingLabel.setToolTip(text.encoding_tooltip);
@@ -135,7 +135,6 @@ async function startSendTab(sendTab) {
 
     // Filename, filetypeExtension, website, version
     const fileInfoLayout = new QBoxLayout(Direction.TopToBottom);
-
     const filenameLayout = new QBoxLayout(Direction.LeftToRight);
     const filenameLabel = new QLabel();
     const filenameInputBox = new QLineEdit();
@@ -274,7 +273,7 @@ async function startSendTab(sendTab) {
 
     sendButton.addEventListener('clicked', async () => {
         const password = passwordInputBox.text();
-        const encodings = { 'Base64': '64', 'HEX': '16', 'Base10': '10', 'UTF-8': 'f8', 'ASCII': 'f8' }
+        const encodings = { 'ASCII': '00', 'ANSI': '01', 'Base10': '10', 'Base64': '64', 'HEX': '16', 'UTF-8': 'f8' }
         const encoding = encodings[encodingBox.currentText()];
         const website = websiteInputBox.text();
         const protocol = '/p2shdata';
